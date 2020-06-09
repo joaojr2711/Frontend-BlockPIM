@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState} from 'react';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -19,12 +19,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems, secondaryListItems } from '../Header/index';
-import Chart from './Chart';
-import ChartPie from './ChartPie';
-import Link from '@material-ui/core/Link';
-import Orders from './Orders';
-
-import api from '../../../services/api';
 
 const drawerWidth = 240;
 
@@ -105,9 +99,6 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
-  depositContext: {
-    flex: 1,
-  },
 }));
 
 export default function Dashboard() {
@@ -115,8 +106,6 @@ export default function Dashboard() {
   const classes = useStyles();
   const history = useHistory();
   const [open, setOpen] = useState(false);
-  const [saldo, setSaldo] = useState('');
-  const [dateLast, setDateLast] = useState('');
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -126,28 +115,9 @@ export default function Dashboard() {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  if (user == null) {
+  if(user == null){
     history.push('/')
   }
-
-  useEffect(() => {
-    const loadTransactions = async () => {
-      const response = await api.get('/wallet', {
-        headers: {
-          'Authorization': `${user}`
-        }
-      });
-      console.log(response)
-      const date = response.data.wallet;
-      const lastDate = date[date.length -1];
-      const selectDate = lastDate.date;
-      const formatedValue = response.data.total.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });;
-      setSaldo(formatedValue);
-      setDateLast(selectDate)
-    }
-
-    loadTransactions();
-  }, [user]);
 
   return (
     <div className={classes.root}>
@@ -193,40 +163,14 @@ export default function Dashboard() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={2}>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={12} lg={6}>
               <Paper className={fixedHeightPaper}>
-                <Typography>Recent Deposits</Typography>
-                <Typography component="p" variant="h4">
-                  {saldo}
-                </Typography>
-                <Typography color="textSecondary" className={classes.depositContext}>
-                  última atualização: {dateLast}
-              </Typography>
-                <div>
-                  <Link color="primary" href="#">
-                    View balance
-                </Link>
-                </div>
+                
               </Paper>
             </Grid>
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
+            <Grid item xs={12} md={12} lg={6}>
               <Paper className={fixedHeightPaper}>
-                <ChartPie />
-              </Paper>
-            </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12} md={8} lg={4}>
-              <Paper className={classes.paper}>
-                <Orders />
-              </Paper>
-            </Grid>
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={8}>
-              <Paper className={fixedHeightPaper}>
-                <Chart />
               </Paper>
             </Grid>
           </Grid>

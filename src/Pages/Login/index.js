@@ -64,92 +64,101 @@ export default function Login() {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
   }
 
-  async function handleLogin(e) {
-    e.preventDefault();
-
-    const data = {
-      email,
-      password
+  const validatePermission = (params) => {
+    if (params.data.permission === '2') {
+      localStorage.setItem('session', params.data.id)
+      history.push('/Dashboard');
+    } else {
+      localStorage.setItem('session', params.data.id)
+      history.push('/Painel');
     }
-
-    await api.post('/sessions', data)
-      .then((res) => { 
-        localStorage.setItem('session', res.data.id)
-        history.push('/Painel')
-      })
-      .catch((err) => { handleClick() })
   }
 
-  return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <form className={classes.form} onSubmit={handleLogin}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
+async function handleLogin(e) {
+  e.preventDefault();
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign In
+  const data = {
+    email,
+    password
+  }
+
+  await api.post('/sessions', data)
+    .then((res) => {
+      validatePermission(res);
+    })
+    .catch((err) => { handleClick() })
+}
+
+return (
+  <Container component="main" maxWidth="xs">
+    <CssBaseline />
+    <div className={classes.paper}>
+      <Avatar className={classes.avatar}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        Sign in
+        </Typography>
+      <form className={classes.form} onSubmit={handleLogin}>
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id="email"
+          label="Email Address"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          autoComplete="email"
+          autoFocus
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          label="Password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+        />
+        <FormControlLabel
+          control={<Checkbox value="remember" color="primary" />}
+          label="Remember me"
+        />
+
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+        >
+          Sign In
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="/forgotPassword" variant="body2">
-                Forgot password?
+        <Grid container>
+          <Grid item xs>
+            <Link href="/forgotPassword" variant="body2">
+              Forgot password?
               </Link>
-            </Grid>
-            <Grid item>
-              <Link href="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
           </Grid>
-        </form>
-      </div>
-      <div className={classes.root}>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error">
-            Email ou Senha inválida!
+          <Grid item>
+            <Link href="/register" variant="body2">
+              {"Don't have an account? Sign Up"}
+            </Link>
+          </Grid>
+        </Grid>
+      </form>
+    </div>
+    <div className={classes.root}>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          Email ou Senha inválida!
           </Alert>
-        </Snackbar>
-      </div>
-    </Container>
-  );
+      </Snackbar>
+    </div>
+  </Container>
+);
 }
