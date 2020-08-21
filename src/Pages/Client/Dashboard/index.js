@@ -137,13 +137,18 @@ export default function Dashboard() {
           'Authorization': `${user}`
         }
       });
-      // console.log(response)
+      console.log(response)
       const date = response.data.wallet;
-      const lastDate = date[date.length -1];
-      const selectDate = lastDate.date;
-      const formatedValue = response.data.total.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
-      setSaldo(formatedValue);
-      setDateLast(selectDate)
+      if(date[date.length -1]){
+        const lastDate = date[date.length -1];
+        const selectDate = lastDate.date;
+        const formatedValue = lastDate.value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        setSaldo(formatedValue);
+        setDateLast(selectDate);
+      }else{
+        setSaldo('R$ 0,00');
+        setDateLast('Ainda não houve investimento');
+      }
     }
 
     loadTransactions();
