@@ -125,7 +125,7 @@ function getStepContent(step) {
   }
 }
 
-export default function Checkout() {
+export default function History() {
   const classes = useStyles();
   const user = localStorage.getItem('session');
   const history = useHistory();

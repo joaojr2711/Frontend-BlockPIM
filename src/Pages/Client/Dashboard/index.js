@@ -142,7 +142,7 @@ export default function Dashboard() {
       if(date[date.length -1]){
         const lastDate = date[date.length -1];
         const selectDate = lastDate.date;
-        const formatedValue = lastDate.value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        const formatedValue = response.data.total.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
         setSaldo(formatedValue);
         setDateLast(selectDate);
       }else{

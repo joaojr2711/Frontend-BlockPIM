@@ -8,6 +8,7 @@ import ForgotPassword from './Pages/ForgotPassword/index'
 import DashboardClient from './Pages/Client/Dashboard'
 import PerfilClient from './Pages/Client/Profile'
 import PaymentClient from './Pages/Client/Payments'
+import HistoryClient from './Pages/Client/History'
 
 import DashboardAdmin from './Pages/Admin/Dashboard'
 
@@ -24,6 +25,10 @@ export default props => (
           <Route exact path='/Painel' component={ DashboardClient } />
           <Route exact path='/Perfil' component={ PerfilClient } />
           <Route exact path='/Payment' component={ PaymentClient } />
+          
+          {/* Rotas de Histórico */}
+          <Route exact path='/History' component={ HistoryClient } />
+
           {/* Rotas de Admin */}
           <Route exact path='/Dashboard' component={ DashboardAdmin } />
         </Switch>
