@@ -17,7 +17,7 @@ export default function PaymentForm() {
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Payment method
+        Aplicação
       </Typography>
       <Grid container>
         <Grid item xs={12} md={12}>
@@ -27,8 +27,8 @@ export default function PaymentForm() {
           <TextField 
           required 
           id="value"
-          // defaultValue="R$"
-          helperText="Formto aceito ex: R$ -- , --"
+          helperText="Formto aceito ex: --,--"
+          placeholder="Insira somente números"
           fullWidth
           onChange={(e) => setValue(e.target.value)}
         />
