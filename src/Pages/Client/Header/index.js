@@ -22,7 +22,7 @@ export const mainListItems = (
         <ListItemText primary="Dashboard" />
       </ListItem>
     </Link>
-    <Link href="/Orders">
+    <Link href="/Investment">
       <ListItem button>
         <ListItemIcon>
           <TimelineIcon />

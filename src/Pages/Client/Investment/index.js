@@ -1,230 +1,175 @@
-import React, { Component } from "react";
-import numeral from "numeral";
-import withStyles from "@material-ui/styles/withStyles";
-import { withRouter, Link } from "react-router-dom";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import Slider from "@material-ui/core/Slider";
-import Button from "@material-ui/core/Button";
-import Months from "./Months";
-import Loading from "./Loading";
+import React, {useState} from 'react';
+import clsx from 'clsx';
+import { useHistory } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Drawer from '@material-ui/core/Drawer';
+import Box from '@material-ui/core/Box';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import Badge from '@material-ui/core/Badge';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import { mainListItems, secondaryListItems } from '../Header/index';
 
-import Topbar from "../Header/index";
+const drawerWidth = 240;
 
-numeral.defaultFormat("0,000");
-
-const styles = theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
-    overflow: "hidden",
-    backgroundSize: "cover",
-    paddingBottom: 200
+    display: 'flex',
   },
-  grid: {
-    width: 1200,
-    margin: `0 ${theme.spacing(2)}px`,
-    [theme.breakpoints.down("sm")]: {
-      width: "calc(100% - 20px)"
-    }
+  toolbar: {
+    paddingRight: 24, // keep right padding when drawer closed
+  },
+  toolbarIcon: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginRight: 36,
+  },
+  menuButtonHidden: {
+    display: 'none',
+  },
+  title: {
+    flexGrow: 1,
+  },
+  drawerPaper: {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerPaperClose: {
+    overflowX: 'hidden',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    width: theme.spacing(7),
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing(9),
+    },
+  },
+  appBarSpacer: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    height: '100vh',
+    overflow: 'auto',
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
   },
   paper: {
-    padding: theme.spacing(3),
-    margin: theme.spacing(2),
-    textAlign: "left",
-    color: theme.palette.text.secondary
-  },
-  rangeLabel: {
-    display: "flex",
-    justifyContent: "space-between",
-    paddingTop: theme.spacing(2)
-  },
-  topBar: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center"
-  },
-  outlinedButtom: {
-    textTransform: "uppercase",
-    margin: theme.spacing(1)
-  },
-  actionButtom: {
-    textTransform: "uppercase",
-    margin: theme.spacing(1),
-    width: 152,
-    height: 36
-  },
-  blockCenter: {
     padding: theme.spacing(2),
-    textAlign: "center"
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
   },
-  block: {
-    padding: theme.spacing(2)
+  fixedHeight: {
+    height: 240,
   },
-  loanAvatar: {
-    display: "inline-block",
-    verticalAlign: "center",
-    width: 16,
-    height: 16,
-    marginRight: 10,
-    marginBottom: -2,
-    color: theme.palette.primary.contrastText,
-    backgroundColor: theme.palette.primary.main
-  },
-  interestAvatar: {
-    display: "inline-block",
-    verticalAlign: "center",
-    width: 16,
-    height: 16,
-    marginRight: 10,
-    marginBottom: -2,
-    color: theme.palette.primary.contrastText,
-    backgroundColor: theme.palette.primary.light
-  },
-  inlining: {
-    display: "inline-block",
-    marginRight: 10
-  },
-  buttonBar: {
-    display: "flex"
-  },
-  noBorder: {
-    borderBottomStyle: "hidden"
-  },
-  mainBadge: {
-    textAlign: "center",
-    marginTop: theme.spacing(4),
-    marginBottom: theme.spacing(4)
-  }
-});
+}));
 
-const monthRange = Months;
+export default function Investment() {
+  const user = localStorage.getItem('session');
+  const classes = useStyles();
+  const history = useHistory();
+  const [open, setOpen] = useState(false);
 
-
-class InvestmentsClient extends Component {
-  state = {
-    loading: true,
-    amount: 0,
-    period: 3,
-    start: 0,
-    monthlyInterest: 0,
-    totalInterest: 0,
-    monthlyPayment: 0,
-    totalPayment: 0,
-    data: []
+  const handleDrawerOpen = () => {
+    setOpen(true);
   };
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  updateValues() {
-    const { amount, period, start } = this.state;
-    const monthlyInterest =
-      (amount * Math.pow(0.01 * 1.01, period)) / Math.pow(0.01, period - 1);
-    const totalInterest = monthlyInterest * (period + start);
-    const totalPayment = amount + totalInterest;
-    const monthlyPayment =
-      period > start ? totalPayment / (period - start) : totalPayment / period;
-
-    const data = Array.from({ length: period + start }, (value, i) => {
-      const delayed = i < start;
-      return {
-        name: monthRange[i],
-        Type: delayed ? 0 : Math.ceil(monthlyPayment).toFixed(0),
-        OtherType: Math.ceil(monthlyInterest).toFixed(0)
-      };
-    });
-
-    this.setState({
-      monthlyInterest,
-      totalInterest,
-      totalPayment,
-      monthlyPayment,
-      data
-    });
+  if(user == null){
+    history.push('/')
   }
 
-  componentDidMount() {
-    this.updateValues();
-  }
-
-  handleChangeAmount = (event, value) => {
-    this.setState({ amount: value, loading: false });
-    this.updateValues();
-  };
-
-  handleChangePeriod = (event, value) => {
-    this.setState({ period: value, loading: false });
-    this.updateValues();
-  };
-
-  handleChangeStart = (event, value) => {
-    this.setState({ start: value, loading: false });
-    this.updateValues();
-  };
-
-  render() {
-    const { classes } = this.props;
-    const {
-      amount,
-      period,
-      start,
-      monthlyPayment,
-      monthlyInterest,
-      data,
-      loading
-    } = this.state;
-    const currentPath = this.props.location.pathname;
-
-    return (
-      <React.Fragment>
-        <CssBaseline />
-        <Topbar currentPath={currentPath} />
-        <div className={classes.root}>
-          <Grid container justify="center">
-            <Grid
-              spacing={10}
-              alignItems="center"
-              justify="center"
-              container
-              className={classes.grid}
-            >
-              <Grid item xs={12} md={5  }>
-                <Paper className={classes.paper}>
-                  <div>
-                    <Typography variant="subtitle1" gutterBottom>
-                      Nome do investimento:
-                    </Typography>
-                    <div className={classes.blockCenter}>
-                      <Typography color="secondary" variant="h6" gutterBottom>
-                        {numeral(amount).format()} USD
-                      </Typography>
-                    </div>
-                    <div>
-                      <Slider
-                        value={amount}
-                        min={100}
-                        max={1000}
-                        step={50}
-                        onChange={this.handleChangeAmount}
-                      />
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        className={classes.actionButtom}
-                      >
-                        Aplicar
-                      </Button>
-                    </div>
-                  </div>
-                </Paper>
-              </Grid>
+  return (
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+        <Toolbar className={classes.toolbar}>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+            Dashboard
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        variant="permanent"
+        classes={{
+          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+        }}
+        open={open}
+      >
+        <div className={classes.toolbarIcon}>
+          <IconButton onClick={handleDrawerClose}>
+            <ChevronLeftIcon />
+          </IconButton>
+        </div>
+        <Divider />
+        <List>{mainListItems}</List>
+        <Divider />
+        <List>{secondaryListItems}</List>
+      </Drawer>
+      <main className={classes.content}>
+        <div className={classes.appBarSpacer} />
+        <Container maxWidth="lg" className={classes.container}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={12} lg={6}>
+              <Paper className={fixedHeightPaper}>
+                
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={12} lg={6}>
+              <Paper className={fixedHeightPaper}>
+              </Paper>
             </Grid>
           </Grid>
-        </div>
-      </React.Fragment>
-    );
-  }
+        </Container>
+      </main>
+    </div>
+  );
 }
-
-export default withRouter(withStyles(styles)(InvestmentsClient));

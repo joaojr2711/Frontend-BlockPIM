@@ -57,7 +57,7 @@ export default function SignUp() {
     };
 
     try {
-      await api.post('users', data);
+      await api.post('/users', data);
       history.push('/');
     } catch (err) {
       return (err)

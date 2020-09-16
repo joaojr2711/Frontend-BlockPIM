@@ -9,6 +9,7 @@ import DashboardClient from './Pages/Client/Dashboard'
 import PerfilClient from './Pages/Client/Profile'
 import PaymentClient from './Pages/Client/Payments'
 import HistoryClient from './Pages/Client/History'
+import InvestmentClient from './Pages/Client/Investment'
 
 import DashboardAdmin from './Pages/Admin/Dashboard'
 
@@ -25,6 +26,7 @@ export default props => (
           <Route exact path='/Painel' component={ DashboardClient } />
           <Route exact path='/Perfil' component={ PerfilClient } />
           <Route exact path='/Payment' component={ PaymentClient } />
+          <Route exact path='/Investment' component={ InvestmentClient } />
           
           {/* Rotas de Histórico */}
           <Route exact path='/History' component={ HistoryClient } />
