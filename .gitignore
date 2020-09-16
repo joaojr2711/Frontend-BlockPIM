@@ -5,7 +5,7 @@
 .pnp.js
 
 #api backend
-/src/services
+/src/services/api.js
 
 # testing
 /coverage
