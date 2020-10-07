@@ -22,6 +22,7 @@ import Chart from "./Chart";
 import ChartPie from "./ChartPie";
 import Link from "@material-ui/core/Link";
 import Orders from "./Orders";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import api from "../../../services/api";
 
@@ -143,11 +144,10 @@ export default function Dashboard() {
       if (date[date.length - 1]) {
         const lastDate = date[date.length - 1];
         const selectDate = lastDate.date;
-        const formatedValue = response.data.total.toLocaleString("pt-br", {
-          style: "currency",
-          currency: "BRL",
-        });
-        setSaldo(formatedValue);
+        const formatedValue = response.data.totalWallet;
+        var total = formatedValue.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+        console.log(total);
+        setSaldo(total);
         setDateLast(selectDate);
       } else {
         setSaldo("R$ 0,00");
@@ -215,13 +215,14 @@ export default function Dashboard() {
               <Paper className={fixedHeightPaper}>
                 <Typography>Recent Deposits</Typography>
                 <Typography component="p" variant="h4">
-                  {saldo}
+                  {saldo ? saldo : <CircularProgress/>}
                 </Typography>
                 <Typography
                   color="textSecondary"
                   className={classes.depositContext}
                 >
-                  última atualização: {dateLast}
+                  {dateLast ? `última atualização: ${dateLast}` : <CircularProgress/>}
+                  
                 </Typography>
                 <div>
                   <Link color="primary" href="#">
