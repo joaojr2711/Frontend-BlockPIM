@@ -12,7 +12,6 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import PaymentForm from './PaymentForm';
-import Review from './Review';
 import clsx from 'clsx';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -111,14 +110,12 @@ depositContext: {
 },
 }));
 
-const steps = ['', ''];
+const steps = [''];
 
 function getStepContent(step) {
   switch (step) {
     case 0:
       return <PaymentForm />;
-    case 1:
-      return <Review />;
     default:
       throw new Error('Unknown step');
   }
@@ -162,12 +159,12 @@ export default function History() {
       headers: {
           Authorization: user
       }
-  })
+    })
       .then((res) => {
         setWallet(res.data.hash)
       })
       .catch((err) => console.log(err))
-  }
+    }
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   if (user == null) {
