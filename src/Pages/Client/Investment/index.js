@@ -1,145 +1,120 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router-dom';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Paper from '@material-ui/core/Paper';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
-import Typography from '@material-ui/core/Typography';
-import PaymentForm from './PaymentForm';
-import clsx from 'clsx';
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import { mainListItems, secondaryListItems } from '../Header/index';
+import React, { useState, useEffect } from "react";
+import clsx from "clsx";
+import { useHistory } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Drawer from "@material-ui/core/Drawer";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import List from "@material-ui/core/List";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import { mainListItems, secondaryListItems } from "../Header/index";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import { Alert, AlertTitle } from "@material-ui/lab";
 
-import api from '../../../services/api';
+import api from "../../../services/api";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-root: {
-  display: 'flex',
-},
-toolbar: {
-  paddingRight: 24, // keep right padding when drawer closed
-},
-toolbarIcon: {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: '0 8px',
-  ...theme.mixins.toolbar,
-},
-appBar: {
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-},
-appBarShift: {
-  marginLeft: drawerWidth,
-  width: `calc(100% - ${drawerWidth}px)`,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-},
-menuButton: {
-  marginRight: 36,
-},
-menuButtonHidden: {
-  display: 'none',
-},
-title: {
-  flexGrow: 1,
-},
-drawerPaper: {
-  position: 'relative',
-  whiteSpace: 'nowrap',
-  width: drawerWidth,
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-},
-drawerPaperClose: {
-  overflowX: 'hidden',
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  width: theme.spacing(7),
-  [theme.breakpoints.up('sm')]: {
-    width: theme.spacing(9),
+  root: {
+    display: "flex",
   },
-},
-appBarSpacer: theme.mixins.toolbar,
-content: {
-  flexGrow: 1,
-  height: '100vh',
-  overflow: 'auto',
-},
-container: {
-  paddingTop: theme.spacing(4),
-  paddingBottom: theme.spacing(4),
-},
-paper: {
-  padding: theme.spacing(2),
-  display: 'flex',
-  overflow: 'auto',
-  flexDirection: 'column',
-},
-fixedHeight: {
-  height: '100vh', 
-},
-depositContext: {
-  flex: 1,
-},
+  toolbar: {
+    paddingRight: 24, // keep right padding when drawer closed
+  },
+  toolbarIcon: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: "0 8px",
+    ...theme.mixins.toolbar,
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginRight: 36,
+  },
+  menuButtonHidden: {
+    display: "none",
+  },
+  title: {
+    flexGrow: 1,
+  },
+  drawerPaper: {
+    position: "relative",
+    whiteSpace: "nowrap",
+    width: drawerWidth,
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerPaperClose: {
+    overflowX: "hidden",
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    width: theme.spacing(7),
+    [theme.breakpoints.up("sm")]: {
+      width: theme.spacing(9),
+    },
+  },
+  appBarSpacer: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    height: "100vh",
+    overflow: "auto",
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
+  },
+  fixedHeight: {
+    height: 450,
+  },
 }));
 
-const steps = [''];
-
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return <PaymentForm />;
-    default:
-      throw new Error('Unknown step');
-  }
-}
-
-export default function History() {
+export default function Dashboard() {
+  const user = localStorage.getItem("session");
   const classes = useStyles();
-  const user = localStorage.getItem('session');
   const history = useHistory();
-  const [wallet, setWallet] = useState('');
   const [open, setOpen] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
-
-  const handleNext = () => {
-  const value = localStorage.getItem('Value');
-    if (value) {
-      setActiveStep(activeStep + 1);
-      return handleWallet();
-    }    
-  };
-
-  const handleBack = () => {
-    setActiveStep(activeStep - 1);
-  };
+  const [title, setCriptoAtivo] = useState("");
+  const [value, setValue] = useState("");
+  const [type, setType] = useState("");
+  const [transaction, setTransaction] = useState([]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -147,45 +122,58 @@ export default function History() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
-  async function handleWallet() {
-    const value = localStorage.getItem('Value');
-    const type = "income";
-    const data = {
-      value, type,
-    }
-  
-    await api.post('/wallet', data,{
-      headers: {
-          Authorization: user
-      }
-    })
-      .then((res) => {
-        setWallet(res.data.hash)
-      })
-      .catch((err) => console.log(err))
-    }
-
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
   if (user == null) {
-    history.push('/')
+    history.push("/");
+  }
+
+  async function handleTransaction() {
+    const data = {
+      title,
+      type,
+      value,
+    };
+
+    await api
+      .post("/transaction", data, {
+        headers: {
+          Authorization: user,
+        },
+      })
+      .then((res) => {
+        setTransaction(res.data.hash);
+      })
+      .catch((err) => console.log(err));
   }
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+      <AppBar
+        position="absolute"
+        className={clsx(classes.appBar, open && classes.appBarShift)}
+      >
         <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+            className={clsx(
+              classes.menuButton,
+              open && classes.menuButtonHidden
+            )}
           >
             <MenuIcon />
           </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+          <Typography
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            className={classes.title}
+          >
             Dashboard
           </Typography>
         </Toolbar>
@@ -210,52 +198,73 @@ export default function History() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={2}>
-            {/* Recent Deposits */}
-            <Grid item xs={12} sm={12} lg={12}>
-            <Paper className={fixedHeightPaper}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={12} lg={6}>
+              <Paper className={fixedHeightPaper}>
                 <Typography component="h1" variant="h4" align="center">
-                  Checkout
+                  Investiments
                 </Typography>
-                <Stepper activeStep={activeStep} className={classes.stepper}>
-                  {steps.map((label) => (
-                    <Step key={label}>
-                      <StepLabel>{label}</StepLabel>
-                    </Step>
-                  ))}
-                </Stepper>
-                <React.Fragment>
-                  {activeStep === steps.length ? (
-                    <React.Fragment>
-                      <Typography variant="h5" gutterBottom>
-                        Transação realizada com sucesso!
-                      </Typography>
-                      <Typography variant="subtitle1">
-                        Sua chave de transação: {wallet}. Guarde com segurança!
-                      </Typography>
-                    </React.Fragment>
-                  ) : (
-                      <React.Fragment>
-                        {getStepContent(activeStep)}
-                        <div className={classes.buttons}>
-                          {activeStep !== 0 && (
-                            <Button onClick={handleBack} className={classes.button}>
-                              Back
-                            </Button>
-                          )}
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleNext}
-                            className={classes.button}
-                          >
-                            {activeStep === steps.length - 1 ? 'Confirmar' : 'Next'}
-                          </Button>
-                        </div>
-                      </React.Fragment>
-                    )}
-                </React.Fragment>
+                <InputLabel id="demo-customized-select-label">
+                  select Active Crypto
+                </InputLabel>
+                <Select
+                  labelId="demo-customized-select-label"
+                  id="demo-customized-select"
+                  value={title}
+                  onChange={(e) => setCriptoAtivo(e.target.value)}
+                >
+                  <MenuItem value="">
+                    <em>------------</em>
+                  </MenuItem>
+                  <MenuItem value="LTZ">LTZ</MenuItem>
+                  <MenuItem value="BTC">BTC</MenuItem>
+                  <MenuItem value="ETH">ETH</MenuItem>
+                </Select>
+                <div style={{ paddingTop: "15px" }}>
+                  <Typography>Enter the value:</Typography>
+                  <TextField
+                    required
+                    id="value"
+                    helperText="Formto aceito ex: --,--"
+                    placeholder="Insira somente números"
+                    fullWidth
+                    onChange={(e) => setValue(e.target.value)}
+                  />
+                </div>
+                <Typography>Enter the transaction type:</Typography>
+                <Select
+                  labelId="demo-customized-select-label"
+                  id="demo-customized-select"
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                >
+                  <MenuItem value="">
+                    <em>------------</em>
+                  </MenuItem>
+                  <MenuItem value="income">to apply</MenuItem>
+                  <MenuItem value="outcome">withdraw</MenuItem>
+                </Select>
+                {transaction.length === 0 ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    style={{ top: "30px" }}
+                    onClick={handleTransaction}
+                  >
+                    Concluir
+                  </Button>
+                ) : (
+                  <Alert severity="success">
+                    <AlertTitle>Success</AlertTitle>
+                    transaction successfully completed your transaction hash:
+                    <strong>{transaction}</strong>
+                  </Alert>
+                )}
               </Paper>
+            </Grid>
+            <Grid item xs={12} md={12} lg={6}>
+              <Paper className={fixedHeightPaper}></Paper>
             </Grid>
           </Grid>
         </Container>
