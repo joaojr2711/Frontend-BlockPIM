@@ -11,7 +11,7 @@ const data = [
   { name: 'Group C', value: 300 },
   { name: 'Group D', value: 200 },
 ];
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = ['#c2c2c2', '#00C49F', '#FFBB28', '#FF8042'];
 
 
 export default function ChartPie() {
