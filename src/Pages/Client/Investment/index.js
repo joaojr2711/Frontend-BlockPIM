@@ -23,6 +23,8 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { Alert, AlertTitle } from "@material-ui/lab";
 
+import Chart from "./Chart";
+
 import api from "../../../services/api";
 
 const drawerWidth = 240;
@@ -264,7 +266,9 @@ export default function Dashboard() {
               </Paper>
             </Grid>
             <Grid item xs={12} md={12} lg={6}>
-              <Paper className={fixedHeightPaper}></Paper>
+              <Paper className={fixedHeightPaper}>
+                <Chart />
+              </Paper>
             </Grid>
           </Grid>
         </Container>
