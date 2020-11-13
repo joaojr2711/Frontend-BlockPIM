@@ -18,10 +18,6 @@ import Paper from '@material-ui/core/Paper';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { mainListItems, secondaryListItems } from '../Header';
-import Chart from './Chart';
-import ChartPie from './ChartPie';
-import Deposits from './Deposits';
-import Orders from './Orders';
 
 const drawerWidth = 240;
 
@@ -165,25 +161,25 @@ export default function Dashboard() {
             {/* Recent Deposits */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
-                <Deposits />
+                
               </Paper>
             </Grid>
             {/* Chart */}
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={fixedHeightPaper}>
-                <ChartPie />
+                
               </Paper>
             </Grid>
             {/* Recent Orders */}
             <Grid item xs={12} md={8} lg={4}>
               <Paper className={classes.paper}>
-                <Orders />
+                
               </Paper>
             </Grid>
             {/* Chart */}
             <Grid item xs={12} md={8} lg={8}>
               <Paper className={fixedHeightPaper}>
-                <Chart />
+                
               </Paper>
             </Grid>
           </Grid>

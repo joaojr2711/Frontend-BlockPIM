@@ -118,6 +118,7 @@ export default function Dashboard() {
   const [saldo, setSaldo] = useState("");
   const [wallet, setWallet] = useState([]);
   const [dateLast, setDateLast] = useState("");
+  const [ transactionActive, setTransactionActive ] = useState([])
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -138,7 +139,6 @@ export default function Dashboard() {
           Authorization: `${user}`,
         },
       });
-      console.log(response);
       setWallet(response.data.wallet);
       const date = response.data.wallet;
       if (date[date.length - 1]) {
@@ -146,7 +146,6 @@ export default function Dashboard() {
         const selectDate = lastDate.date;
         const formatedValue = response.data.totalWallet;
         var total = formatedValue.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-        console.log(total);
         setSaldo(total);
         setDateLast(selectDate);
       } else {
@@ -154,7 +153,18 @@ export default function Dashboard() {
         setDateLast("Ainda não houve investimento");
       }
     };
+    const loadTransactionsActive = async () => {
+      await api.get("/transactionCriptos", {
+        headers: {
+          Authorization: `${user}`,
+        },
+      }).then((res) => {
+        setTransactionActive(res.data);
+      })
+      .catch((err) => console.log(err));
+    };
 
+    loadTransactionsActive();
     loadTransactions();
   }, [user]);
 
@@ -235,6 +245,11 @@ export default function Dashboard() {
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={fixedHeightPaper}>
                 <ChartPie />
+                {
+                  transactionActive.map((item) => (
+                    <Typography>{item.name}: {item.value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</Typography>
+                  ))
+                }
               </Paper>
             </Grid>
             {/* Recent Orders */}

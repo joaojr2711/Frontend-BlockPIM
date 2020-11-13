@@ -112,28 +112,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function createData(name, tipo, valor, data, criptografia) {
-  return { name, tipo, valor, data, criptografia };
-}
-
-const rows = [
-  createData(
-    "BTC_5",
-    "Renda variavél",
-    "$--,--",
-    "--/--/----",
-    "v97f216f09127v7211asd!2"
-  ),
-  createData(
-    "ETH_3",
-    "Renda variavél",
-    "$--,--",
-    "--/--/----",
-    "v97vfe2323DC32f32f432!#"
-  ),
-];
-
-
 export default function History() {
   const user = localStorage.getItem('session');
   const classes = useStyles();
@@ -161,7 +139,6 @@ export default function History() {
           'Authorization': `${user}`
         }
       });
-      console.log(response)
       const date = response.data.wallet;
       if(date[date.length -1]){
         const lastDate = date[date.length -1];
