@@ -22,7 +22,6 @@ export default function ChartPie() {
           Authorization: `${user}`,
         },
       }).then((res) => {
-        // console.log(res.data);
         setTransaction(res.data);
       })
       .catch((err) => console.log(err));

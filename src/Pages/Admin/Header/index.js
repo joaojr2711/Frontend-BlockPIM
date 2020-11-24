@@ -7,14 +7,12 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import HistoryIcon from '@material-ui/icons/History';
-import PaymentIcon from '@material-ui/icons/Payment';
-import TimelineIcon from '@material-ui/icons/Timeline';
 
 import Link from '@material-ui/core/Link';
 
 export const mainListItems = (
   <div>
-    <Link href="/Painel">
+    <Link href="/Dashboard">
       <ListItem button>
         <ListItemIcon>
           <DashboardIcon />
@@ -22,28 +20,12 @@ export const mainListItems = (
         <ListItemText primary="Dashboard" />
       </ListItem>
     </Link>
-    <Link href="">
-      <ListItem button>
-        <ListItemIcon>
-          <TimelineIcon />
-        </ListItemIcon>
-        <ListItemText primary="Orders" />
-      </ListItem>
-    </Link>
-    <Link href="">
+    <Link href="/Dashboard/History">
       <ListItem button>
         <ListItemIcon>
           <HistoryIcon />
         </ListItemIcon>
         <ListItemText primary="History" />
-      </ListItem>
-    </Link>
-    <Link href="">
-      <ListItem button>
-        <ListItemIcon>
-          <PaymentIcon />
-        </ListItemIcon>
-        <ListItemText primary="Payment" />
       </ListItem>
     </Link>
   </div>
