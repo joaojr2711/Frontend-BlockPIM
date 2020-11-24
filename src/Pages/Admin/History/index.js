@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,12 +17,18 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import { mainListItems, secondaryListItems } from '../Header';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
-import PeopleIcon from '@material-ui/icons/People';
-import AssessmentIcon from '@material-ui/icons/Assessment';
-import TimelineIcon from '@material-ui/icons/Timeline';
+import { mainListItems, secondaryListItems } from '../Header/index';
+import Link from '@material-ui/core/Link';
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
+import Button from '@material-ui/core/Button';
+import SearchIcon from '@material-ui/icons/Search';
 
 import api from '../../../services/api';
 
@@ -102,19 +108,29 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     flexDirection: 'column',
   },
+  barContainer:{
+    position: 'relative',
+    display: 'flex',
+  },
+  bar:{
+    position: 'relative',
+    paddingLeft: '50%'
+  },
   fixedHeight: {
-    height: 150,
+    height: 240,
+  },
+  depositContext: {
+    flex: 1,
   },
 }));
 
-export default function Dashboard() {
+export default function History() {
   const user = localStorage.getItem('session');
   const classes = useStyles();
   const history = useHistory();
   const [open, setOpen] = useState(false);
-  const [qtdUser, setQtdUser] = useState('');
-  const [qtdTransaction, setQtdTransaction] = useState('');
-
+  const [historyInvest, setHistoryInvest] = useState([]);
+  const [textInput, setTextInput] = useState('');
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -124,22 +140,41 @@ export default function Dashboard() {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  if(user == null){
+  if (user == null) {
     history.push('/')
   }
 
   useEffect(() => {
-    const loadAdmin = async () => {
-      await api.get("/adm")
-      .then((res) => {
-        console.log(res.data)
-        setQtdUser(res.data.qtdUser);
-        setQtdTransaction(res.data.qtdTransaction)
-      })
-      .catch((err) => console.log(err));
-    };
-    loadAdmin();
-  });
+    const loadTransactions = async () => {
+      const response = await api.get('/admHistory');
+        setHistoryInvest(response.data.transaction)
+    }
+
+    loadTransactions();
+  }, []);
+
+  const executeSearch = () => {
+    console.log('text to filter', textInput);
+    if(textInput){
+      const filtrado = historyInvest.filter(data => {
+        if(data.type === textInput){
+          return data;
+        }
+        else if(data.date === textInput){
+          return data;
+        }
+        else if(data.name === textInput){
+          return data;
+        }
+      });
+      console.log("IF Filter", filtrado)
+      return setHistoryInvest(filtrado);
+    }
+  }
+
+  const setText = (event) => {
+    setTextInput(event)
+  };
 
   return (
     <div className={classes.root}>
@@ -156,7 +191,7 @@ export default function Dashboard() {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Dashboard
+            History
           </Typography>
         </Toolbar>
       </AppBar>
@@ -180,45 +215,71 @@ export default function Dashboard() {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={4} lg={4}>
-              <Paper className={fixedHeightPaper}>
-                <Typography component="h3" variant="h6" color="primary">
-                  Clientes Registrados
-                </Typography>
-
-                <Typography component="h1" variant="h3">
-                  <PeopleIcon  color="primary" fontSize="large"/>
-                  {qtdUser ? qtdUser : <CircularProgress/>}
-                </Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={4} lg={4}>
-              <Paper className={fixedHeightPaper}>
-                <Typography component="h3" variant="h6" color="primary">
-                  Investimentos Registrados
-                </Typography>
-              
-                <Typography variant="h3">
-                  <AssessmentIcon color="primary" fontSize="large"/>
-                  {qtdTransaction}
-                </Typography>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={4} lg={4}>
-              <Paper className={fixedHeightPaper}>
-                <Typography component="h3" variant="h6" color="primary">
-                  CriptoAtivo Popular
-                </Typography>
-
-                <Typography variant="h3" >
-                  <TimelineIcon color="primary" fontSize="large"/>
-                  ETH
-                </Typography>
-              </Paper>
+        <Grid container justify="center" spacing={1}>
+          <Grid
+            spacing={4}
+            alignItems="center"
+            justify="center"
+            container
+            className={classes.grid}
+          >
+            <Grid item xs={12} md={12}>
+              <div className={classes.barContainer}>
+                <Typography
+                    style={{ textTransform: "uppercase" }}
+                    color="primary"
+                    gutterBottom
+                  >
+                    Investment history
+                  </Typography>
+                <div style={{paddingLeft:'750px', margin:'10px'}}>
+                  <TextField
+                    id="txtSearch"
+                    onChange={e => setText(e.target.value)}
+                    id="standard-basic" label="Search"
+                  />
+                  <Button 
+                    variant="contained" 
+                    color="primary" 
+                    onClick={executeSearch}
+                    style={{width:'50px', height: '50px'}}
+                  >
+                    <SearchIcon/>
+                  </Button>
+                </div>
+              </div>
+              <div className={classes.box}>
+                <Grid justify="center" container>
+                  <TableContainer component={Paper}>
+                    <Table className={classes.table} aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Nome do investmento</TableCell>
+                          <TableCell align="right">
+                            Tipo de investimento
+                          </TableCell>
+                          <TableCell align="right">Data</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {historyInvest.map((item) => (
+                          <TableRow key={item.id}>
+                            <TableCell component="th" scope="row">
+                              {item.name}
+                            </TableCell>
+                            <TableCell align="right">{item.type}</TableCell>
+                            <TableCell align="right">{item.date}</TableCell>
+                          </TableRow>
+                        ))} 
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Grid>
+              </div>
             </Grid>
           </Grid>
-        </Container>
+        </Grid>
+      </Container>
       </main>
     </div>
   );

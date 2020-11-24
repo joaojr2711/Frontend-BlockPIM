@@ -12,6 +12,7 @@ import HistoryClient from './Pages/Client/History'
 import InvestmentClient from './Pages/Client/Investment'
 
 import DashboardAdmin from './Pages/Admin/Dashboard'
+import HistoryAdmin from './Pages/Admin/History'
 
 export default props => (
     <BrowserRouter>
@@ -33,6 +34,8 @@ export default props => (
 
           {/* Rotas de Admin */}
           <Route exact path='/Dashboard' component={ DashboardAdmin } />
+          <Route exact path='/Dashboard/History' component={ HistoryAdmin } />
+
         </Switch>
     </BrowserRouter>
   )
