@@ -4,6 +4,10 @@
 
 <p align="center">Nessa aplicação desenvolvemos o frontend da aplicação para o trabalho de conclusão, uma empresa de investimentos em cripto ativos chamada: <b>BlockPim</b>!</p>
 
+## 🔗 Link
+
+- [BlockPIM](https://frontend-blockpim.herokuapp.com/)
+
 ## 🚀 Tecnologias
 
 - ⚡ React.js
